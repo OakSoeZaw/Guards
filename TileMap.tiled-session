@@ -1,0 +1,111 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "assets/Map/Map.tmx",
+    "expandedProjectPaths": [
+        ".",
+        "assets/Map",
+        "assets"
+    ],
+    "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "GroundTiles.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/Map/Bushe1.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/Map/Castle.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/Map/Map.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 412,
+                "y": 356
+            }
+        },
+        "assets/Map/basegroud.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/Map/buildings.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/Map/decor.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/Map/differentColorGround.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/Map/ground1.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/Map/groundFinalColor.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 0.5,
+            "scaleInEditor": 1
+        },
+        "assets/Map/groundNewColor.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "assets/Map/tester.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "frame.defaultDuration": 100,
+    "last.imagePath": "/Users/oaksoe/myGame/Guards/assets/Tiny Swords (Free Pack)/Terrain/Decorations/Bushes",
+    "map.height": 10,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 10,
+    "openFiles": [
+        "assets/Map/ground1.tsx",
+        "assets/Map/Map.tmx",
+        "assets/Map/decor.tsx",
+        "assets/Map/Bushe1.tsx"
+    ],
+    "project": "TileMap.tiled-project",
+    "recentFiles": [
+        "assets/Map/ground1.tsx",
+        "assets/Map/Bushe1.tsx",
+        "assets/Map/decor.tsx",
+        "assets/Map/Map.tmx",
+        "assets/Map/buildings.tsx",
+        "assets/Map/Castle.tsx",
+        "assets/Map/groundFinalColor.tsx",
+        "assets/Map/basegroud.tsx",
+        "assets/Map/groundNewColor.tsx",
+        "assets/Map/tester.tsx",
+        "assets/Map/differentColorGround.tsx",
+        "GroundTiles.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.margin": 0,
+    "tileset.spacing": 0,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    },
+    "tileset.type": 0
+}
