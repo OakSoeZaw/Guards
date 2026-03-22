@@ -8,6 +8,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -15,16 +19,39 @@ public class Main extends ApplicationAdapter {
 	TiledMap map;
 	OrthogonalTiledMapRenderer mapRenderer;
 	TiledMapTileLayer tileLayer;
+	
+	SpriteBatch spriteBatch;
+	ShapeRenderer shapeRenderer;
 
+	Guard guard;
+	Player player;
+
+	Texture runGuard;
+	Texture idleGuard;
+	
+	Texture runPlayer;
+	Texture idlePlayer;
 	@Override
 	public void create(){
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, w, h);  // this will show half of the map
+		camera.setToOrtho(false, 640, 640);  // this will show half of the map
 		camera.position.set(320, 320, 0);
 		camera.update();
+
+		spriteBatch = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
+		
+		runGuard = new Texture("Warrior_Run.png");
+		idleGuard = new Texture("Warrior_Idle.png");
+
+		runPlayer = new Texture("Run.png");
+		idlePlayer = new Texture("Idle.png");
+
+		guard = new Guard(25f, 612f, idleGuard, runGuard);
+		player = new Player(600f, 25f, idlePlayer, runPlayer);
 
 		map = new TmxMapLoader().load("Map/Map.tmx");
 		mapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -50,16 +77,41 @@ public class Main extends ApplicationAdapter {
 				Tile.type[key] = blocked ? (byte) 1 : (byte) 0;
 			}
 		}
+
+		//testing
+
+		for(int row = Tile.rows -1; row >=0; row --){
+			for(int col = 0; col< Tile.cols; col ++){
+				int key = row * Tile.cols + col;
+				System.out.print(Tile.type[key] +" ");
+			}
+			System.out.println();
+		}
+
 	}
 	@Override
 	public void render(){
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
-
+		
+		float delta = Gdx.graphics.getDeltaTime();
+		
+		guard.update(delta, player.x, player.y);
+		player.update(delta);
 
 		camera.update();
-		mapRenderer.setView(camera);
-		mapRenderer.render();
+        mapRenderer.setView(camera);
+        mapRenderer.render();
+		
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		spriteBatch.setProjectionMatrix(camera.combined);
+		guard.draw(shapeRenderer, spriteBatch);
+		player.draw(spriteBatch);
+		if(Gdx.input.isTouched()) {
+    		Vector3 touch = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+    		camera.unproject(touch);
+    		System.out.println("world: " + touch.x + ", " + touch.y);
+		}
 	}
 
 	@Override

@@ -8,9 +8,14 @@ public class Tile {
 
 	public static byte[] weight;
 	public static byte[] type;
+	
+	public static int rows;
+	public static int cols;
 
 	public static void init(int rows, int cols){
 		int total = rows * cols;
+		Tile.rows = rows;
+		Tile.cols = cols;
 		weight = new byte[total];
 		type = new byte[total];
 		Arrays.fill(weight, (byte) 1);
