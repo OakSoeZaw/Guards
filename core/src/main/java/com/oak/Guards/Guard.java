@@ -39,7 +39,9 @@ public class Guard{
 
 	private List<Integer> returnPath;
 	private int pathIndex;
+	private boolean facingLeft;
 	
+
 	private static final int TILE_SIZE =(int) ( 16 * SCALE);
 
 	public Guard(float x, float y, Texture idleTexture, Texture runTexture){
@@ -75,6 +77,7 @@ public class Guard{
 				if(!canSeePlayer(playerX, playerY)){
 					startReturn();
 				}else{
+					angle = (float) Math.toDegrees(Math.atan2(playerY -y, playerX - x));
 					float dist = (float) Math.hypot(playerX-x, playerY -y);
 					x+= ((playerX-x) / dist) * chaseSpeed * delta;
 					y += ((playerY - y) / dist) * chaseSpeed * delta;
@@ -178,7 +181,12 @@ public class Guard{
 		}
 
 		TextureRegion frame = current .getKeyFrame(stateTime, true);
-		batch.draw(frame, x - 32f, y - 32f, 64f, 64f);
+		facingLeft =  Math.cos(Math.toRadians(angle)) < 0;
+		if(facingLeft){
+			batch.draw(frame, x + 32f, y - 32f, -64f, 64f);
+		}else{
+			batch.draw(frame, x - 32f, y - 32f, 64f, 64f);
+		}
 		batch.end();
 	}
 

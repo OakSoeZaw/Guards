@@ -19,6 +19,7 @@ public class Player{
 	
 	private float stateTime = 0f;
 	public boolean moving = false;
+	private boolean facingLeft = false;
 
 	public Player(float x, float y, Texture idleTexture, Texture runTexture){
 		this.x = x;
@@ -35,6 +36,7 @@ public class Player{
 		stateTime+= delta;
 		moving = false;
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			facingLeft = true;
 			float newX = x - SPEED * delta;
 			int col = (int) ((newX - TILE_SIZE/2) / TILE_SIZE);
 			int row = (int) (y  / TILE_SIZE);
@@ -44,6 +46,7 @@ public class Player{
 				moving = true;
 			}
 		}if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			facingLeft = false;
 			float newX = x + SPEED * delta;
 			int col = (int) ((newX + TILE_SIZE/2) / TILE_SIZE);
 			int row = (int) (y / TILE_SIZE);
@@ -86,10 +89,18 @@ public class Player{
 
 		batch.begin();
 		TextureRegion frame = current.getKeyFrame(stateTime, true);
-		batch.draw(frame, x - 32f, y - 32f, 64f, 64f);
+		if(facingLeft){
+			batch.draw(frame, x + 32f, y - 32f, -64f, 64f);
+		}else{
+			batch.draw(frame, x - 32f, y - 32f, 64f, 64f);
+		}
 		batch.end();
 	}
 	public boolean isCaught(float guardX, float guardY){
+		float distance = (float) Math.hypot(guardX -x, guardY -y);
+		if(distance <= 32f){
+			return true;
+		}
 		return false;
 	}
 }

@@ -50,7 +50,7 @@ public class Main extends ApplicationAdapter {
 		runPlayer = new Texture("Run.png");
 		idlePlayer = new Texture("Idle.png");
 
-		guard = new Guard(25f, 612f, idleGuard, runGuard);
+		guard = new Guard(175f, 425f, idleGuard, runGuard);
 		player = new Player(600f, 25f, idlePlayer, runPlayer);
 
 		map = new TmxMapLoader().load("Map/Map.tmx");
@@ -111,6 +111,10 @@ public class Main extends ApplicationAdapter {
     		Vector3 touch = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
     		camera.unproject(touch);
     		System.out.println("world: " + touch.x + ", " + touch.y);
+		}
+
+		if(player.isCaught(guard.x, guard.y)){
+			System.out.println("Game Over");
 		}
 	}
 
