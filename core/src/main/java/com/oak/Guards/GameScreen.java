@@ -59,7 +59,7 @@ public class GameScreen implements Screen{
 		idlePlayer = new Texture("Idle.png");
 
 		guard = new Guard(175f, 425f, idleGuard, runGuard);
-		player = new Player(600f, 25f, idlePlayer, runPlayer);
+		player = new Player(400f, 25f, idlePlayer, runPlayer);
 
 		map = new TmxMapLoader().load("Map/Map.tmx");
 		mapRenderer = new OrthogonalTiledMapRenderer(map);
