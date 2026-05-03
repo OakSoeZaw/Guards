@@ -102,7 +102,7 @@ public class GameScreen implements Screen{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		guard.update(delta, player.x, player.y);
+		guard.update(delta, player.position.x, player.position.y, player.velocity.x, player.velocity.y);
 		player.update(delta);
 
 		camera.update();
@@ -119,7 +119,7 @@ public class GameScreen implements Screen{
     		System.out.println("world: " + touch.x + ", " + touch.y);
 		}
 
-		if(player.isCaught(guard.x, guard.y)){
+		if(player.isCaught(guard.position.x, guard.position.y)){
 			game.setScreen( new GameOverScreen(game));
 		}
 	}

@@ -5,14 +5,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 public class Player{
-	public float x, y;
+
+	public Vector2 position;
+	public Vector2 velocity;
+	public Vector2 orientation;
+
+	private static final float MAX_ACCELERATION = 200f;
 
 	private static final int TILE_SIZE = 16;
-	private static final float SPEED = 70f;
+	private static final float SPEED = 80f;
 
 	private Animation<TextureRegion> idleAnimation;
 	private Animation<TextureRegion> runAnimation;
@@ -22,8 +28,9 @@ public class Player{
 	private boolean facingLeft = false;
 
 	public Player(float x, float y, Texture idleTexture, Texture runTexture){
-		this.x = x;
-		this.y = y;
+		this.position = new Vector2(x, y);
+		this.velocity = new Vector2(0, 0);
+		this.orientation = new Vector2(1, 0);
 
 		TextureRegion[][] idleFrames = TextureRegion.split(idleTexture, 192, 192);
 		TextureRegion[][] runFrames = TextureRegion.split(runTexture, 192, 192);
@@ -35,48 +42,49 @@ public class Player{
 	public void update(float delta){
 		stateTime+= delta;
 		moving = false;
+
+		Vector2 input = new Vector2(0, 0);
+
+
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-			facingLeft = true;
-			float newX = x - SPEED * delta;
-			int col = (int) ((newX - TILE_SIZE/2) / TILE_SIZE);
-			int row = (int) (y  / TILE_SIZE);
-			int key = row * Tile.cols + col;
-			if(Tile.passable(key)){
-				x = newX;
-				moving = true;
-			}
+			input.x -= 1;
 		}if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-			facingLeft = false;
-			float newX = x + SPEED * delta;
-			int col = (int) ((newX + TILE_SIZE/2) / TILE_SIZE);
-			int row = (int) (y / TILE_SIZE);
-			int key = row * Tile.cols + col;
-			if(Tile.passable(key)){
-				x = newX;
-				moving = true;
-			}
+			input.x += 1;
 		}if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-			float newY = y + SPEED * delta;
-			int col = (int) (x / TILE_SIZE);
-			int row = (int) ((newY + TILE_SIZE /2) / TILE_SIZE);
-			int key = row * Tile.cols + col;
-			if(Tile.passable(key)){
-				y = newY;
-				moving = true;
-			}
+			input.y += 1;
 		}if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-			float newY = y - SPEED * delta;
-			int col = (int) (x / TILE_SIZE);
-			int row = (int) ((newY - TILE_SIZE /2) / TILE_SIZE);
-			int key = row * Tile.cols + col;
-			if(Tile.passable(key)){
-				y = newY;
-				moving = true;
-			}
+			input.y -= 1;
 		}
 
-		x = Math.max(0, Math.min(x, Tile.cols * TILE_SIZE));
-		y = Math.max(0, Math.min(y, Tile.rows * TILE_SIZE));
+		if(input.len() > 0){
+			input.nor().scl(SPEED);
+		}
+		moving = velocity.len() > 0.01f;
+		if(moving) facingLeft = velocity.x < 0;
+
+		Vector2 steering = new Vector2(input).sub(velocity);
+		if(steering.len() > MAX_ACCELERATION) steering.nor().scl(MAX_ACCELERATION);
+
+		velocity.add(steering.x * delta, steering.y *delta);
+		if(velocity.len() > SPEED ) velocity.nor().scl(SPEED);
+
+		float newX = position.x + velocity.x * delta;
+		float newY = position.y + velocity.y * delta;
+
+		int colX = (int) ((newX + ( velocity.x > 0 ? TILE_SIZE/2 : -TILE_SIZE/2)) / TILE_SIZE);
+		int rowX = (int) (position.y / TILE_SIZE);
+		if(Tile.passable(rowX * Tile.cols + colX)) position.x = newX;
+		else velocity.x = 0;
+
+		int colY = (int) (position.x / TILE_SIZE);
+		int rowY = (int) ((newY + (velocity.y > 0 ? TILE_SIZE/2 : -TILE_SIZE/2)) / TILE_SIZE);
+		if(Tile.passable(rowY * Tile.cols + colY)) position.y = newY;
+		else velocity.y = 0;
+
+		if(velocity.len() > 0.01f) orientation.set(velocity).nor();
+
+		position.x = Math.max(0, Math.min(position.x, Tile.cols * TILE_SIZE));
+		position.y = Math.max(0, Math.min(position.y, Tile.rows * TILE_SIZE));
 
 	}
 	public void draw(SpriteBatch batch){
@@ -90,17 +98,13 @@ public class Player{
 		batch.begin();
 		TextureRegion frame = current.getKeyFrame(stateTime, true);
 		if(facingLeft){
-			batch.draw(frame, x + 32f, y - 32f, -64f, 64f);
+			batch.draw(frame, position.x + 32f, position.y - 32f, -64f, 64f);
 		}else{
-			batch.draw(frame, x - 32f, y - 32f, 64f, 64f);
+			batch.draw(frame, position.x - 32f, position.y - 32f, 64f, 64f);
 		}
 		batch.end();
 	}
 	public boolean isCaught(float guardX, float guardY){
-		float distance = (float) Math.hypot(guardX -x, guardY -y);
-		if(distance <= 32f){
-			return true;
-		}
-		return false;
+		return position.dst(guardX, guardY) <= 32f;
 	}
 }
